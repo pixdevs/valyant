@@ -136,27 +136,6 @@ function setupFlow() {
   document.getElementById("services-title").setAttribute("tabindex", "-1");
 }
 
-function setupHero() {
-  const frame = document.querySelector(".opening .frame");
-  if (!frame || reduceMotion) return;
-  const photo = frame.querySelector("img");
-  frame.classList.add("is-live");
-  const setShift = (x, y) => {
-    frame.style.setProperty("--px", x);
-    frame.style.setProperty("--py", y);
-    if (photo) photo.style.transform = "translate(" + (x * -10) + "px, " + (y * -8) + "px) scale(1.05)";
-  };
-  frame.addEventListener("pointermove", (event) => {
-    const rect = frame.getBoundingClientRect();
-    setShift(
-      ((event.clientX - rect.left) / rect.width - 0.5).toFixed(3),
-      ((event.clientY - rect.top) / rect.height - 0.5).toFixed(3)
-    );
-  });
-  frame.addEventListener("pointerleave", () => setShift(0, 0));
-  setShift(0, 0);
-}
-
 function setupMotion() {
   if (reduceMotion) return;
   const flow = document.querySelector(".flow");
@@ -294,5 +273,4 @@ applyContact();
 setupNav();
 setupFlow();
 setupForm();
-setupHero();
 setupMotion();
