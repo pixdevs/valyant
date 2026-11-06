@@ -1,0 +1,54 @@
+# GitHub Pages publishes every file that is committed. Keep secrets,
+# tokens, and private links in the files below so they stay local.
+
+# Environment and credentials
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa
+id_ed25519
+credentials.json
+client_secret*.json
+secrets.json
+service-account*.json
+
+# Local overrides that may hold private URLs or keys
+*.local.json
+*.local.js
+*.local.ts
+*.local.md
+config.local.*
+private/
+secrets/
+
+# Dependencies and generated output. Commit the site source;
+# GitHub Pages builds or serves that, not these caches.
+node_modules/
+.npm/
+.cache/
+.parcel-cache/
+.sass-cache/
+_site/
+.jekyll-cache/
+vendor/bundle/
+dist/
+playwright-report/
+test-results/
+blob-report/
+
+# OS, editor, and logs
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+npm-debug.log*
+
+# Local Cursor data. MCP configs and notes can contain tokens and private URLs.
+# The imported skill link under .cursor/skills stays trackable.
+.cursor/*
+!.cursor/skills/
