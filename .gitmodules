@@ -1,3 +1,6 @@
 [submodule "skills/unslop"]
 	path = skills/unslop
 	url = git@github.com:dhinesh-dhira/unslop.git
+[submodule "skills/apple-design-skill"]
+	path = skills/apple-design-skill
+	url = git@github.com:dhinesh-dhira/apple-design-skill.git
