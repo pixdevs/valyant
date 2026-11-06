@@ -1,0 +1,3 @@
+[submodule "skills/unslop"]
+	path = skills/unslop
+	url = git@github.com:dhinesh-dhira/unslop.git
