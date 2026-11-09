@@ -1,16 +1,12 @@
 /* Dummy stand-ins. Replace with confirmed details when Valyant has them.
-   Leave formEndpoint empty until a real submission URL is confirmed. */
+   Leave formEndpoint empty until a real submission URL is confirmed.
+   atsUrl is a placeholder until the live ATS / careers system URL is available. */
 const VALYANT = {
   email: "info@valyant.com",
   phone: "99000 99000",
   location: "18, Lake View Street, Pammal, Chennai 600075",
-  industries: [
-    "Product engineering",
-    "IT services",
-    "Healthcare technology",
-    "Banking systems"
-  ],
-  formEndpoint: ""
+  formEndpoint: "",
+  atsUrl: "https://example.com/ats"
 };
 
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -20,12 +16,24 @@ function applyContact() {
     node.textContent = VALYANT.email;
     if (node.tagName === "A") node.href = "mailto:" + VALYANT.email;
   });
+
+  document.querySelectorAll("[data-contact='resume-email']").forEach((node) => {
+    if (node.tagName === "A") {
+      node.href = "mailto:" + VALYANT.email + "?subject=" + encodeURIComponent("Resume for Valyant talent pool");
+    }
+  });
+
   document.querySelectorAll("[data-contact='phone']").forEach((node) => {
     node.textContent = VALYANT.phone;
     if (node.tagName === "A") node.href = "tel:" + VALYANT.phone.replace(/[^\d+]/g, "");
   });
+
   document.querySelectorAll("[data-contact='location']").forEach((node) => {
     node.textContent = VALYANT.location;
+  });
+
+  document.querySelectorAll('a[href="https://example.com/ats"], #ats-link').forEach((node) => {
+    node.href = VALYANT.atsUrl;
   });
 }
 
@@ -60,97 +68,108 @@ function setupNav() {
   });
 }
 
-function scrollToId(id) {
-  const target = document.getElementById(id);
-  if (!target) return;
-  target.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+function setupHeaderTheme() {
+  const header = document.querySelector(".site-header");
+  const hero = document.querySelector(".hero");
+  if (!header || !hero || !("IntersectionObserver" in window)) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      header.classList.toggle("is-over-hero", entry.isIntersecting);
+    });
+  }, { rootMargin: "-64px 0px 0px 0px", threshold: 0 });
+
+  observer.observe(hero);
+  header.classList.add("is-over-hero");
 }
 
-function setPressed(group, selected) {
-  group.forEach((button) => {
-    const on = button === selected;
-    button.classList.toggle("is-selected", on);
-    button.setAttribute("aria-pressed", on ? "true" : "false");
+function setupEnquire() {
+  const toggle = document.getElementById("enquire-toggle");
+  const panel = document.getElementById("enquiry-panel");
+  const label = document.querySelector("[data-enquire-label]");
+  if (!toggle || !panel) return;
+
+  const setOpen = (open) => {
+    panel.hidden = !open;
+    toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    if (label) label.textContent = open ? "Close form" : "Open form";
+  };
+
+  toggle.addEventListener("click", () => {
+    setOpen(panel.hidden);
   });
+
+  document.querySelectorAll("[data-open-form]").forEach((link) => {
+    link.addEventListener("click", () => {
+      setOpen(true);
+    });
+  });
+
+  if (window.location.hash === "#enquire") setOpen(true);
 }
 
-function setupFlow() {
+function setupAudience() {
+  const options = [...document.querySelectorAll("[data-audience]")];
+  const emailLabel = document.querySelector("[data-label-email]");
+  const businessFields = document.querySelectorAll("[data-business-field]");
+  const professionalFields = document.querySelectorAll("[data-professional-field]");
+  const businessActions = document.querySelector("[data-business-actions]");
+  const professionalActions = document.querySelector("[data-professional-actions]");
   const interest = document.getElementById("interest");
-  const roleNote = document.getElementById("role-note");
   const message = document.getElementById("message");
-  const situation = document.getElementById("situation");
-  const roleSection = document.getElementById("role");
-  const needButtons = [...document.querySelectorAll("[data-need]")];
-  const roleButtons = [...document.querySelectorAll("[data-role]")];
-  const hiringNeed = needButtons.find((button) => button.getAttribute("data-need") === "Hiring support");
+  let audience = "business";
 
-  needButtons.forEach((button) => {
-    button.setAttribute("aria-pressed", "false");
-    button.addEventListener("click", () => {
-      const need = button.getAttribute("data-need");
-      const isHiring = need === "Hiring support";
-      interest.value = need;
-      setPressed(needButtons, button);
-      if (!isHiring) {
-        setPressed(roleButtons, null);
-        roleNote.value = "";
-      }
-      roleSection.hidden = isHiring;
-      if (isHiring) {
-        scrollToId("services");
-        document.getElementById("services-title").focus({ preventScroll: true });
-      } else {
-        scrollToId("role");
-        document.getElementById("role-title").focus({ preventScroll: true });
-      }
+  const apply = (next) => {
+    audience = next;
+    options.forEach((button) => {
+      const on = button.getAttribute("data-audience") === next;
+      button.classList.toggle("is-selected", on);
+      button.setAttribute("aria-pressed", on ? "true" : "false");
     });
+
+    const isBusiness = next === "business";
+    businessFields.forEach((field) => { field.hidden = !isBusiness; });
+    professionalFields.forEach((field) => { field.hidden = isBusiness; });
+    if (businessActions) businessActions.hidden = !isBusiness;
+    if (professionalActions) professionalActions.hidden = isBusiness;
+    if (emailLabel) emailLabel.textContent = isBusiness ? "Work email" : "Email";
+    if (interest) interest.required = isBusiness;
+    if (message) message.required = isBusiness;
+    document.body.dataset.audience = next;
+  };
+
+  options.forEach((button) => {
+    button.addEventListener("click", () => apply(button.getAttribute("data-audience")));
   });
 
-  roleButtons.forEach((button) => {
-    button.setAttribute("aria-pressed", "false");
-    button.addEventListener("click", () => {
-      if (hiringNeed) setPressed(needButtons, hiringNeed);
-      interest.value = "Hiring support";
-      roleSection.hidden = true;
-      roleNote.value = button.getAttribute("data-role");
-      setPressed(roleButtons, button);
-      scrollToId("enquiry");
-      roleNote.focus({ preventScroll: true });
-    });
-  });
+  apply("business");
 
-  situation.addEventListener("input", () => {
-    roleNote.value = situation.value;
-  });
+  return () => audience;
+}
 
-  document.getElementById("continue-role").addEventListener("click", () => {
-    const text = situation.value.trim();
-    roleNote.value = text;
-    if (text && message.value.trim().length < 12) message.value = text;
-    scrollToId("enquiry");
-    if (!text) situation.focus();
-    else document.getElementById("name").focus({ preventScroll: true });
-  });
+function setupMarquee() {
+  const root = document.querySelector("[data-marquee]");
+  if (!root) return;
+  const track = root.querySelector(".client-track");
+  if (!track) return;
 
-  document.getElementById("role-title").setAttribute("tabindex", "-1");
-  document.getElementById("services-title").setAttribute("tabindex", "-1");
+  const rail = document.createElement("div");
+  rail.className = "client-rail";
+  root.appendChild(rail);
+  rail.appendChild(track);
+
+  if (reduceMotion) return;
+
+  const clone = track.cloneNode(true);
+  clone.setAttribute("aria-hidden", "true");
+  rail.appendChild(clone);
+  root.classList.add("is-animated");
 }
 
 function setupMotion() {
-  if (reduceMotion) return;
-  const flow = document.querySelector(".flow");
-  if (flow) {
-    const updateThread = () => {
-      const rect = flow.getBoundingClientRect();
-      const start = window.innerHeight * 0.82;
-      const total = rect.height + window.innerHeight * 0.2;
-      const seen = start - rect.top;
-      const progress = Math.min(1, Math.max(0, seen / total));
-      flow.style.setProperty("--thread-scale", progress.toFixed(3));
-    };
-    updateThread();
-    window.addEventListener("scroll", updateThread, { passive: true });
-    window.addEventListener("resize", updateThread);
+  if (reduceMotion) {
+    document.querySelectorAll(".reveal").forEach((node) => node.classList.add("is-in"));
+    return;
   }
 
   const reveals = document.querySelectorAll(".reveal");
@@ -158,6 +177,7 @@ function setupMotion() {
     reveals.forEach((node) => node.classList.add("is-in"));
     return;
   }
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
       if (!entry.isIntersecting) return;
@@ -165,6 +185,7 @@ function setupMotion() {
       observer.unobserve(entry.target);
     });
   }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" });
+
   reveals.forEach((node) => observer.observe(node));
 }
 
@@ -184,26 +205,26 @@ function fieldError(input, message) {
   }
 }
 
-function validateField(input) {
+function validateField(input, audience) {
   const value = input.value.trim();
   if (input.id === "name" && value.length < 2) return "Enter your name.";
   if (input.id === "email") {
-    if (!value) return "Enter a work email address.";
+    if (!value) return audience === "business" ? "Enter a work email address." : "Enter an email address.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) return "That email doesn’t look complete.";
   }
-  if (input.id === "interest" && !value) return "Choose what you’re interested in.";
-  if (input.id === "message" && value.length < 12) return "Add a few words about what you need.";
-  if (input.id === "company" && value.length > 120) return "Use a shorter company name.";
+  if (audience === "business") {
+    if (input.id === "interest" && !value) return "Choose a service interest.";
+    if (input.id === "message" && value.length < 12) return "Add a few words about what you need.";
+    if (input.id === "company" && value.length > 120) return "Use a shorter company name.";
+  }
   return "";
 }
 
-function setupForm() {
+function setupForm(getAudience) {
   const form = document.getElementById("enquiry-form");
   if (!form) return;
   const status = document.getElementById("form-status");
-  const submit = form.querySelector("[type='submit']");
-  const fields = ["name", "email", "company", "interest", "role-note", "message"]
-    .map((id) => document.getElementById(id));
+  const submitButtons = form.querySelectorAll("[type='submit']");
 
   const showStatus = (text, kind) => {
     status.hidden = false;
@@ -211,19 +232,30 @@ function setupForm() {
     status.textContent = text;
   };
 
-  fields.forEach((input) => {
-    if (!input) return;
-    input.addEventListener("input", () => {
-      if (input.getAttribute("aria-invalid") === "true") fieldError(input, validateField(input));
-    });
+  const activeFields = () => {
+    const audience = getAudience();
+    if (audience === "professional") {
+      return ["name", "email", "skills", "message-pro"].map((id) => document.getElementById(id));
+    }
+    return ["name", "email", "company", "interest", "role-note", "message"].map((id) => document.getElementById(id));
+  };
+
+  form.addEventListener("input", (event) => {
+    const input = event.target;
+    if (!(input instanceof HTMLElement) || !input.id) return;
+    if (input.getAttribute("aria-invalid") === "true") {
+      fieldError(input, validateField(input, getAudience()));
+    }
   });
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
+    const audience = getAudience();
+    const fields = activeFields().filter(Boolean);
     let firstInvalid = null;
+
     fields.forEach((input) => {
-      if (!input) return;
-      const problem = validateField(input);
+      const problem = validateField(input, audience);
       fieldError(input, problem);
       if (problem && !firstInvalid) firstInvalid = input;
     });
@@ -231,6 +263,15 @@ function setupForm() {
     if (firstInvalid) {
       showStatus("Check the highlighted fields and try again.", "error");
       firstInvalid.focus();
+      return;
+    }
+
+    if (audience === "professional" && !document.getElementById("message-pro").value.trim()) {
+      showStatus(
+        "For resumes, use Email your resume or the ATS link. Add a short note here only if you want to leave a message.",
+        "hold"
+      );
+      status.focus();
       return;
     }
 
@@ -243,19 +284,30 @@ function setupForm() {
       return;
     }
 
-    submit.disabled = true;
+    submitButtons.forEach((button) => { button.disabled = true; });
     try {
+      const payload = audience === "business"
+        ? {
+            audience,
+            name: document.getElementById("name").value.trim(),
+            email: document.getElementById("email").value.trim(),
+            company: document.getElementById("company").value.trim(),
+            interest: document.getElementById("interest").value,
+            role: document.getElementById("role-note").value.trim(),
+            message: document.getElementById("message").value.trim()
+          }
+        : {
+            audience,
+            name: document.getElementById("name").value.trim(),
+            email: document.getElementById("email").value.trim(),
+            skills: document.getElementById("skills").value.trim(),
+            message: document.getElementById("message-pro").value.trim()
+          };
+
       const response = await fetch(VALYANT.formEndpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
-        body: JSON.stringify({
-          name: document.getElementById("name").value.trim(),
-          email: document.getElementById("email").value.trim(),
-          company: document.getElementById("company").value.trim(),
-          interest: document.getElementById("interest").value,
-          role: document.getElementById("role-note").value.trim(),
-          message: document.getElementById("message").value.trim()
-        })
+        body: JSON.stringify(payload)
       });
       if (!response.ok) throw new Error("Request failed");
       form.reset();
@@ -263,7 +315,7 @@ function setupForm() {
     } catch (error) {
       showStatus("The enquiry could not be sent. Try again, or email " + VALYANT.email + ".", "error");
     } finally {
-      submit.disabled = false;
+      submitButtons.forEach((button) => { button.disabled = false; });
       status.focus();
     }
   });
@@ -271,6 +323,9 @@ function setupForm() {
 
 applyContact();
 setupNav();
-setupFlow();
-setupForm();
+setupHeaderTheme();
+setupEnquire();
+const getAudience = setupAudience();
+setupForm(getAudience);
+setupMarquee();
 setupMotion();
