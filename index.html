@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#141414">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Syne:wght@500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500&family=Syne:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
   <script>document.documentElement.classList.add("js");</script>
 </head>
@@ -85,8 +85,13 @@
               <img src="assets/service-recruitment.jpg" width="1200" height="900" alt="Two people in a hiring conversation at a small table." loading="lazy" decoding="async">
             </div>
             <div class="service-body">
-              <h3>IT Recruitment</h3>
+              <h3>Recruitment</h3>
               <p>Permanent technology roles, from brief through search and conversations.</p>
+              <ul class="support-examples">
+                <li>Talent Acquisition</li>
+                <li>Talent Sourcing</li>
+                <li>ATS</li>
+              </ul>
             </div>
           </article>
           <article class="service reveal">
@@ -96,6 +101,11 @@
             <div class="service-body">
               <h3>Contract Staffing</h3>
               <p>Project and time-bound talent matched to skills, scope, and duration.</p>
+              <ul class="support-examples">
+                <li>Compliance</li>
+                <li>Contracts</li>
+                <li>Payroll</li>
+              </ul>
             </div>
           </article>
           <article class="service reveal">
@@ -103,13 +113,13 @@
               <img src="assets/service-support.jpg" width="1200" height="900" alt="Hands resting beside a blank page and a pencil." loading="lazy" decoding="async">
             </div>
             <div class="service-body">
-              <h3>Hiring Support</h3>
-              <p>Practical help making hiring clearer inside the organisation.</p>
+              <h3>HR Support</h3>
+              <p>Practical help making managing people clearer inside the organisation.</p>
               <ul class="support-examples">
-                <li>TA</li>
-                <li>Payroll</li>
                 <li>HRMS</li>
                 <li>HRBP</li>
+                <li>LBP</li>
+                <li>PMO</li>
               </ul>
             </div>
           </article>
@@ -125,8 +135,7 @@
         </div>
         <div class="talent-actions">
           <a class="button button-invert" data-contact="resume-email" href="mailto:info@valyant.com?subject=Resume%20for%20Valyant%20talent%20pool">Send your resume</a>
-          <!-- ATS href is a stand-in until the live system URL is set in js/site.js -->
-          <a class="text-link text-link-on-ink" href="https://example.com/ats" id="ats-link">Open ATS</a>
+          <a class="text-link text-link-on-ink" data-ats href="https://example.com/ats">Open ATS</a>
         </div>
       </div>
     </section>
@@ -138,15 +147,16 @@
           <div class="about-stack">
             <article>
               <h3>The firm</h3>
-              <p>Valyant IT Group was founded in 2026. The founders have spent more than fifteen years in IT staffing, sitting with companies that need a technology person and with people looking for the next role. That experience shapes how we brief a search, how we speak with candidates, and how we keep hiring easy to follow for both sides.</p>
+              <p>Established in 2026, Valyant IT Group was founded on more than fifteen years of specialized, hands-on experience in the information technology staffing industry. Our foundational expertise is built upon a deep, dual-sided understanding of the market—having spent over a decade advising organizations in need of business-critical technical talent while simultaneously guiding elite professionals toward their next strategic career advancements.</p>
+              <p>This extensive industry tenure directly informs our operational methodology. It refines how we calibrate search briefs, elevates the caliber of our candidate engagements, and ensures that the entire talent acquisition lifecycle remains transparent, streamlined, and highly efficient for both hiring managers and prospective candidates.</p>
             </article>
             <article>
               <h3>Mission</h3>
-              <p>Make technology hiring a clear conversation: understand the role, find a person whose experience fits, and keep the next step plain for the company and the candidate. We work so teams know what they asked for, and people know where they stand before, during, and after each conversation.</p>
+              <p>To deliver clarity in technology staffing through rigorous role calibration, strategic candidate alignment, and frictionless communication. We empower organizations and professionals alike with total visibility before, during, and after every engagement.</p>
             </article>
             <article>
               <h3>Vision</h3>
-              <p>A staffing practice where both sides know where they stand, from the first brief through the conversations that follow. We want organisations to hire with less noise, and professionals to move with clearer information — so the work starts on solid ground.</p>
+              <p>A staffing partnership grounded in transparency and absolute clarity. We eliminate the noise from enterprise hiring and empower professionals with actionable information, ensuring every new engagement begins on solid ground.</p>
             </article>
           </div>
         </div>
@@ -251,8 +261,7 @@
               </div>
               <div class="form-actions" data-professional-actions hidden>
                 <a class="button" data-contact="resume-email" href="mailto:info@valyant.com?subject=Resume%20for%20Valyant%20talent%20pool">Email your resume</a>
-                <!-- ATS href is a stand-in until the live system URL is set in js/site.js -->
-                <a class="text-link" href="https://example.com/ats">Open ATS</a>
+                <a class="text-link" data-ats href="https://example.com/ats">Open ATS</a>
                 <button class="button button-quiet" type="submit">Send note</button>
               </div>
               <p class="privacy">Your details are used only to reply to this enquiry. This form cannot deliver a message until an inbox is connected. Email <a data-contact="email" href="mailto:info@valyant.com">info@valyant.com</a> in the meantime.</p>

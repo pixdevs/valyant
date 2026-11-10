@@ -45,6 +45,7 @@ blob-report/
 Thumbs.db
 .idea/
 .vscode/
+.gitk.cache
 *.log
 npm-debug.log*
 

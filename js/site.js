@@ -32,8 +32,8 @@ function applyContact() {
     node.textContent = VALYANT.location;
   });
 
-  document.querySelectorAll('a[href="https://example.com/ats"], #ats-link').forEach((node) => {
-    node.href = VALYANT.atsUrl;
+  document.querySelectorAll("[data-ats]").forEach((node) => {
+    if (node.tagName === "A") node.href = VALYANT.atsUrl;
   });
 }
 
